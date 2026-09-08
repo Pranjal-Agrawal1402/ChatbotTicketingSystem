@@ -1,0 +1,72 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Overview</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Welcome back, {{ session.get('admin_username','Admin') }} 👋</h1>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; margin-bottom:30px;">
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Total Revenue</div><div style="font-size:1.7rem; font-weight:800; color:var(--navy-deep);">₹{{ stats.total_revenue }}</div></div>
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Paid Bookings</div><div style="font-size:1.7rem; font-weight:800; color:var(--navy-deep);">{{ stats.total_bookings }}</div></div>
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Ticketed Visitors</div><div style="font-size:1.7rem; font-weight:800; color:var(--navy-deep);">{{ stats.total_ticket_visitors }}</div></div>
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Live Visitors On-site</div><div style="font-size:1.7rem; font-weight:800; color:var(--navy-deep);">{{ stats.total_live_visitors }}</div></div>
+</div>
+
+<div class="info-card" style="margin-bottom:30px;">
+  <h2 style="font-size:1rem; color:var(--navy-deep); margin-bottom:16px;">Live Occupancy by Gallery</h2>
+  <canvas id="occupancyChart" height="90"
+    data-labels='{{ chart_labels|tojson }}'
+    data-occ='{{ chart_occ|tojson }}'
+    data-cap='{{ chart_cap|tojson }}'></canvas>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+  <div class="info-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h2 style="font-size:1rem; color:var(--navy-deep);">Recent Bookings</h2>
+      <a href="{{ url_for('admin.bookings_admin') }}" style="font-size:0.78rem; color:var(--maroon); font-weight:700;">View all →</a>
+    </div>
+    <table class="admin-table">
+      <thead><tr><th>Ref</th><th>Visitor</th><th>Tickets</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td class="font-display">{{ b.reference }}</td>
+          <td>{{ b.visitor_name }}</td>
+          <td>{{ b.total_tickets }}</td>
+          <td>₹{{ b.amount }}</td>
+          <td><span class="pill {{ 'pill-open' if b.payment_status=='paid' else ('pill-busy' if b.payment_status=='pending' else 'pill-full') }}">{{ b.payment_status }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="text-align:center; color:var(--ink-dim); padding:20px;">No bookings yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h2 style="font-size:1rem; color:var(--navy-deep);">Quick Occupancy Control</h2>
+      <a href="{{ url_for('admin.galleries_admin') }}" style="font-size:0.78rem; color:var(--maroon); font-weight:700;">Manage all →</a>
+    </div>
+    <div style="max-height:340px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
+      {% for g in galleries %}
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="font-size:1.2rem;">{{ g.icon }}</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:0.82rem; font-weight:700; color:var(--navy-deep); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.name }}</div>
+          <div class="occ-track" style="margin-top:4px;"><div data-occ-bar="{{ g.id }}" class="occ-fill {{ 'occ-open' if g.status=='Open' else ('occ-busy' if g.status=='Busy' else 'occ-full') }}" style="width:{{ g.occupancy_percent }}%"></div></div>
+        </div>
+        <div style="font-size:0.72rem; color:var(--ink-dim); width:64px; text-align:right;" data-occ-label="{{ g.id }}">{{ g.current_occupancy }} / {{ g.max_occupancy }}</div>
+        <button data-gallery-id="{{ g.id }}" data-occ-delta="-5" class="btn-sm" style="border:1px solid var(--line); background:#fff; border-radius:50%; width:26px; height:26px; padding:0;">−</button>
+        <button data-gallery-id="{{ g.id }}" data-occ-delta="5" class="btn-sm" style="border:1px solid var(--line); background:#fff; border-radius:50%; width:26px; height:26px; padding:0;">+</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Visitor Analytics — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Website Traffic</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Visitor Analytics</h1>
+  </div>
+</div>
+<p style="color:var(--ink-dim); font-size:0.8rem; max-width:680px; margin-bottom:22px;">
+  Tracks page views across the public website by section. No personal data or IP addresses are
+  stored — only the page visited, referring link, browser, and time.
+</p>
+
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:26px;">
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Total Page Views</div><div style="font-size:1.7rem; font-weight:800; color:var(--navy-deep);">{{ total_visits }}</div></div>
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Sections Tracked</div><div style="font-size:1.7rem; font-weight:800; color:var(--navy-deep);">{{ by_section|length }}</div></div>
+  <div class="info-card"><div style="font-size:0.75rem; color:var(--ink-dim); margin-bottom:6px;">Most Visited Section</div><div style="font-size:1.1rem; font-weight:800; color:var(--navy-deep);">{{ by_section[0][0] if by_section else '—' }}</div></div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:26px;">
+  <div class="info-card">
+    <h2 style="font-size:0.95rem; color:var(--navy-deep); margin-bottom:14px;">Views by Section</h2>
+    <canvas id="sectionChart" height="200"></canvas>
+  </div>
+  <div class="info-card">
+    <h2 style="font-size:0.95rem; color:var(--navy-deep); margin-bottom:14px;">Views — Last 7 Days</h2>
+    <canvas id="dailyChart" height="200"></canvas>
+  </div>
+</div>
+
+<div class="info-card" style="overflow-x:auto;">
+  <h2 style="font-size:0.95rem; color:var(--navy-deep); margin-bottom:14px;">Who Visited — Recent Page Views</h2>
+  <table class="admin-table">
+    <thead><tr><th>Time</th><th>Section</th><th>Page</th><th>Referred From</th><th>Browser</th></tr></thead>
+    <tbody>
+      {% for v in recent %}
+      <tr>
+        <td style="font-size:0.72rem; color:var(--ink-dim); white-space:nowrap;">{{ v['created_at'] }}</td>
+        <td><span class="chip" style="font-size:0.68rem;">{{ v['section'] }}</span></td>
+        <td style="font-family:monospace; font-size:0.75rem;">{{ v['path'] }}</td>
+        <td style="font-size:0.72rem; color:var(--ink-dim); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ v['referrer'] or 'Direct' }}</td>
+        <td style="font-size:0.72rem; color:var(--ink-dim); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ v['user_agent'] }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center; color:var(--ink-dim); padding:20px;">No visits recorded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  new Chart(document.getElementById('sectionChart'), {
+    type: 'bar',
+    data: { labels: {{ section_labels|tojson }}, datasets: [{ data: {{ section_counts|tojson }}, backgroundColor: 'rgba(10,38,71,0.85)', borderRadius: 6 }] },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } },
+      scales: { x: { ticks: { color: '#55586b' }, grid: { color: 'rgba(10,38,71,0.06)' } }, y: { ticks: { color: '#1c1c24', font: { size: 11 } }, grid: { display: false } } } }
+  });
+  new Chart(document.getElementById('dailyChart'), {
+    type: 'line',
+    data: { labels: {{ daily_labels|tojson }}, datasets: [{ data: {{ daily_counts|tojson }}, borderColor: '#b8892b', backgroundColor: 'rgba(184,137,43,0.15)', fill: true, tension: 0.3 }] },
+    options: { plugins: { legend: { display: false } },
+      scales: { x: { ticks: { color: '#55586b' }, grid: { display: false } }, y: { ticks: { color: '#55586b' }, grid: { color: 'rgba(10,38,71,0.06)' } } } }
+  });
+</script>
+{% endblock %}

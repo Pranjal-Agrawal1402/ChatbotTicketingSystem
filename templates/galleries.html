@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}All Galleries — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="breadcrumb"><a href="{{ url_for('public.home') }}">Home</a> / Galleries</div>
+  <div class="reveal">
+    <div class="eyebrow">Full Collection</div>
+    <h1 class="section-title font-display">All Galleries</h1>
+    <p class="section-desc">Twelve permanent galleries spanning over 200 million years of natural and human history.</p>
+    <form method="GET" style="max-width:420px; display:flex; gap:10px; margin-bottom:36px;">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search by era or keyword...">
+      <button class="btn btn-navy">Search</button>
+    </form>
+  </div>
+
+  {% if not galleries %}
+  <div class="info-card" style="text-align:center; color:var(--ink-dim);">No galleries matched your search. Try another term.</div>
+  {% endif %}
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:26px;">
+    {% for g in galleries %}
+    <div class="reveal">
+      <a href="{{ url_for('public.gallery_detail', slug=g.slug) }}" class="card" style="text-decoration:none; color:inherit;">
+        <div class="card-img" data-wiki-topic="{{ g.wiki_topic }}" data-wiki-size="500">
+          <span class="card-era-badge">{{ g.icon }} {{ g.period }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">{{ g.name }}</div>
+          <div class="card-desc">{{ g.short_description }}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span class="pill {{ 'pill-open' if g.status=='Open' else ('pill-busy' if g.status=='Busy' else 'pill-full') }}">● {{ g.status }}</span>
+            <span style="font-size:0.75rem; color:var(--ink-dim);">{{ g.current_occupancy }}/{{ g.max_occupancy }}</span>
+          </div>
+          <div class="occ-track"><div class="occ-fill {{ 'occ-open' if g.status=='Open' else ('occ-busy' if g.status=='Busy' else 'occ-full') }}" style="width:{{ g.occupancy_percent }}%"></div></div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

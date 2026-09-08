@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+<section class="section" style="max-width:420px;">
+  <div class="reveal info-card">
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="font-size:2.4rem;">🛡️</div>
+      <h1 class="font-display" style="color:var(--navy-deep);">Staff / Admin Portal</h1>
+      <p style="font-size:0.78rem; color:var(--ink-dim);">Restricted access — authorized personnel only</p>
+    </div>
+    <form method="POST">
+      <div style="margin-bottom:14px;"><label class="field-label">Username</label><input type="text" name="username" required autofocus></div>
+      <div style="margin-bottom:20px;"><label class="field-label">Password</label><input type="password" name="password" required></div>
+      <button type="submit" class="btn btn-primary btn-block">Sign In →</button>
+    </form>
+    <p style="font-size:0.68rem; text-align:center; color:var(--ink-dim); margin-top:18px;">
+      Default demo credentials: <strong>admin / admin123</strong> — change via
+      <strong>ADMIN_USERNAME</strong> / <strong>ADMIN_PASSWORD</strong> environment variables.
+    </p>
+  </div>
+</section>
+{% endblock %}

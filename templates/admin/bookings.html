@@ -1,0 +1,36 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Bookings — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Transactions</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">All Bookings</h1>
+  </div>
+</div>
+
+<div class="info-card" style="overflow-x:auto;">
+  <table class="admin-table">
+    <thead><tr><th>Ref</th><th>Visitor</th><th>Email</th><th>Indian</th><th>Foreign</th><th>Student</th><th>Child</th><th>Amount</th><th>Provider</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td class="font-display">{{ b.reference }}</td>
+        <td>{{ b.visitor_name }}</td>
+        <td>{{ b.email }}</td>
+        <td>{{ b.qty_indian }}</td>
+        <td>{{ b.qty_foreign }}</td>
+        <td>{{ b.qty_student }}</td>
+        <td>{{ b.qty_child }}</td>
+        <td>₹{{ b.amount }}</td>
+        <td style="text-transform:capitalize;">{{ b.payment_provider }}</td>
+        <td><span class="pill {{ 'pill-open' if b.payment_status=='paid' else ('pill-busy' if b.payment_status=='pending' else 'pill-full') }}">{{ b.payment_status }}</span></td>
+        <td style="font-size:0.75rem; color:var(--ink-dim);">{{ b.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="11" style="text-align:center; color:var(--ink-dim); padding:24px;">No bookings yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Plan Your Visit — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<section class="section" style="max-width:900px;">
+  <div class="breadcrumb"><a href="{{ url_for('public.home') }}">Home</a> / Plan Your Visit</div>
+  <div class="reveal" style="text-align:center; margin-bottom:30px;">
+    <div class="eyebrow">Book Online</div>
+    <h1 class="section-title font-display">Plan Your Visit</h1>
+    <p class="section-desc" style="margin:0 auto;">
+      {% if stripe_enabled %}🔒 Secure payment powered by Stripe.{% else %}🧪 Demo payment mode is currently active — no real charge will be made.{% endif %}
+    </p>
+  </div>
+
+  <div class="reveal info-card" style="margin-bottom:30px;">
+    <table class="price-table">
+      <tr><th>Category</th><th>Price per Ticket</th></tr>
+      <tr><td>Indian Citizens</td><td>₹{{ site_settings.price_indian }}</td></tr>
+      <tr><td>Foreign Nationals</td><td>₹{{ site_settings.price_foreign }}</td></tr>
+      <tr><td>Students (valid ID required at entry)</td><td>₹{{ site_settings.price_student }}</td></tr>
+      <tr><td>Children under 12</td><td>Free</td></tr>
+    </table>
+  </div>
+
+  <form id="ticket-form" action="{{ url_for('public.visit') }}" method="POST" class="reveal info-card"
+        data-price-indian="{{ site_settings.price_indian }}" data-price-foreign="{{ site_settings.price_foreign }}"
+        data-price-student="{{ site_settings.price_student }}" data-price-child="{{ site_settings.price_child }}">
+    <h2 class="font-display" style="margin:0 0 20px; color:var(--navy-deep);">Visitor &amp; Ticket Details</h2>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+      <div><label class="field-label">Full Name</label><input type="text" name="visitor_name" required></div>
+      <div><label class="field-label">Email Address</label><input type="email" name="email" required></div>
+      <div><label class="field-label">Phone (optional)</label><input type="tel" name="phone"></div>
+      <div><label class="field-label">Preferred Visit Date</label><input type="date" name="visit_date"></div>
+    </div>
+
+    <h3 style="font-size:0.95rem; color:var(--navy-deep); margin-bottom:12px;">Select Tickets</h3>
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:24px;">
+      <div><label class="field-label">Indian (₹{{ site_settings.price_indian }})</label><input type="number" id="qty_indian" name="qty_indian" min="0" max="20" value="1"></div>
+      <div><label class="field-label">Foreign (₹{{ site_settings.price_foreign }})</label><input type="number" id="qty_foreign" name="qty_foreign" min="0" max="20" value="0"></div>
+      <div><label class="field-label">Student (₹{{ site_settings.price_student }})</label><input type="number" id="qty_student" name="qty_student" min="0" max="20" value="0"></div>
+      <div><label class="field-label">Child (Free)</label><input type="number" id="qty_child" name="qty_child" min="0" max="20" value="0"></div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-top:1px solid var(--line); margin-bottom:20px;">
+      <div style="font-size:0.85rem; color:var(--ink-dim);"><span id="ticket-count">1</span> ticket(s) selected</div>
+      <div style="font-size:1.6rem; font-weight:800; color:var(--navy-deep);" id="ticket-total">₹{{ site_settings.price_indian }}</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Proceed to Payment →</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Account — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Settings</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Account</h1>
+  </div>
+</div>
+
+<div class="info-card" style="max-width:420px;">
+  <p style="font-size:0.85rem; color:var(--ink-dim); margin-bottom:20px;">Logged in as <strong>{{ user.username if user else 'admin' }}</strong></p>
+  <form method="POST">
+    <div style="margin-bottom:16px;"><label class="field-label">New Password</label><input type="password" name="new_password" required></div>
+    <button type="submit" class="btn btn-primary btn-block">Update Password →</button>
+  </form>
+</div>
+{% endblock %}

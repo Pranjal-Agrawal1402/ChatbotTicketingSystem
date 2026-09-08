@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}{{ site_settings.site_name }} — {{ site_settings.tagline }}{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" data-wiki-topic="{{ site_settings.hero_wiki_topic }}" data-wiki-size="1600">
+  <div class="hero-content">
+    <span class="hero-eyebrow">🏛️ An Official Heritage &amp; Culture Institution</span>
+    <h1 class="font-display">From the Age of Dinosaurs to the Great Indian Empires — All Under One Roof</h1>
+    <p class="lead">{{ site_settings.tagline }}</p>
+    <div style="display:flex; gap:14px; flex-wrap:wrap;">
+      <a href="{{ url_for('public.visit') }}" class="btn btn-primary">🎟️ Book Tickets Online</a>
+      <a href="{{ url_for('public.galleries_list') }}" class="btn btn-outline">Explore Galleries →</a>
+    </div>
+  </div>
+</section>
+
+<!-- STAT BAR -->
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div><div class="stat-num" data-counter="{{ stats.galleries }}">0</div><div class="stat-label">Galleries</div></div>
+    <div><div class="stat-num" data-counter="{{ stats.visitors_today }}">0</div><div class="stat-label">Visitors Today</div></div>
+    <div><div class="stat-num">{{ stats.artifacts }}</div><div class="stat-label">Artefacts &amp; Exhibits</div></div>
+    <div><div class="stat-num">{{ stats.established }}</div><div class="stat-label">Established</div></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:50px; align-items:center;">
+    <div class="reveal">
+      <div class="eyebrow">About the Museum</div>
+      <h2 class="section-title font-display">A Journey Spanning 200 Million Years</h2>
+      <p style="color:var(--ink-dim); line-height:1.75; margin-bottom:20px;">{{ site_settings.about_text }}</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="chip">🦖 Jurassic Era</span>
+        <span class="chip">🦣 Ice Age</span>
+        <span class="chip">🪨 Stone Age</span>
+        <span class="chip">🏺 Ancient Civilizations</span>
+        <span class="chip">☸️ Mauryan Empire</span>
+        <span class="chip">🏛️ Roman Age</span>
+        <span class="chip">🕉️ Hindu Heritage</span>
+        <span class="chip">🕌 Medieval Sultanate</span>
+        <span class="chip">🛡️ Rajput Era</span>
+        <span class="chip">🏯 Mughal Empire</span>
+        <span class="chip">🪯 Sikh Heritage</span>
+      </div>
+    </div>
+    <div class="reveal card-img" style="height:340px; border-radius:12px;" data-wiki-topic="Ashoka" data-wiki-size="700"></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- GALLERIES GRID -->
+<section class="section" id="galleries">
+  <div class="reveal" style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px; flex-wrap:wrap; gap:16px;">
+    <div>
+      <div class="eyebrow">Explore by Era</div>
+      <h2 class="section-title font-display">Our Galleries</h2>
+    </div>
+    <a href="{{ url_for('public.galleries_list') }}" class="btn btn-navy btn-sm">View All Galleries →</a>
+  </div>
+  <p class="section-desc">Twelve permanent galleries take visitors on a chronological journey — from prehistoric fossils to the architectural splendour of India's great historical empires.</p>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:26px;">
+    {% for g in galleries %}
+    <div class="reveal">
+      <a href="{{ url_for('public.gallery_detail', slug=g.slug) }}" class="card" style="text-decoration:none; color:inherit;">
+        <div class="card-img" data-wiki-topic="{{ g.wiki_topic }}" data-wiki-size="500">
+          <span class="card-era-badge">{{ g.icon }} {{ g.period }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">{{ g.name }}</div>
+          <div class="card-desc">{{ g.short_description }}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span class="pill {{ 'pill-open' if g.status=='Open' else ('pill-busy' if g.status=='Busy' else 'pill-full') }}">● {{ g.status }}</span>
+            <span style="font-size:0.75rem; color:var(--ink-dim);">{{ g.current_occupancy }}/{{ g.max_occupancy }} visitors</span>
+          </div>
+          <div class="occ-track"><div class="occ-fill {{ 'occ-open' if g.status=='Open' else ('occ-busy' if g.status=='Busy' else 'occ-full') }}" style="width:{{ g.occupancy_percent }}%"></div></div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- VISIT INFO -->
+<section class="section">
+  <div class="reveal" style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
+    <div class="info-card">
+      <div class="eyebrow">Plan Ahead</div>
+      <h3 class="font-display" style="margin:6px 0 16px; color:var(--navy-deep);">Visitor Information</h3>
+      <table class="price-table">
+        <tr><th>Timings</th><td>{{ site_settings.timings }}</td></tr>
+        <tr><th>Address</th><td>{{ site_settings.address }}</td></tr>
+        <tr><th>Contact</th><td>{{ site_settings.phone }} · {{ site_settings.email }}</td></tr>
+      </table>
+      <a href="{{ url_for('public.visit') }}" class="btn btn-primary" style="margin-top:20px;">Book Tickets Now →</a>
+    </div>
+    <div class="info-card">
+      <div class="eyebrow">Entry Fees</div>
+      <h3 class="font-display" style="margin:6px 0 16px; color:var(--navy-deep);">Ticket Pricing</h3>
+      <table class="price-table">
+        <tr><th>Category</th><th>Price</th></tr>
+        <tr><td>Indian Citizens</td><td>₹{{ site_settings.price_indian }}</td></tr>
+        <tr><td>Foreign Nationals</td><td>₹{{ site_settings.price_foreign }}</td></tr>
+        <tr><td>Students (valid ID)</td><td>₹{{ site_settings.price_student }}</td></tr>
+        <tr><td>Children under 12</td><td>Free</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTACT -->
+<section class="section" id="contact" style="max-width:760px;">
+  <div class="reveal info-card">
+    <div class="eyebrow" style="text-align:center;">Get in Touch</div>
+    <h2 class="section-title font-display" style="text-align:center;">Send Us a Message</h2>
+    <form action="{{ url_for('public.contact') }}" method="POST" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div><label class="field-label">Full Name</label><input type="text" name="name" required></div>
+      <div><label class="field-label">Email Address</label><input type="email" name="email" required></div>
+      <div style="grid-column:1/-1;">
+        <label class="field-label">What is this regarding?</label>
+        <select name="subject">
+          <option>General Inquiry</option>
+          <option>Ticket Booking / Visit</option>
+          <option>Gallery Information</option>
+          <option>Careers / Employment</option>
+          <option>Feedback or Complaint</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div style="grid-column:1/-1;"><label class="field-label">Message</label><textarea name="message" rows="4" required></textarea></div>
+      <button type="submit" class="btn btn-navy" style="grid-column:1/-1;">Send Message</button>
+    </form>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.env
+instance/
+*.db
+*.sqlite3
+.venv/
+venv/
+env/
+.DS_Store
+*.log
+.vercel
+node_modules/
+static/uploads/*
+!static/uploads/.gitkeep

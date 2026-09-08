@@ -1,0 +1,41 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Notices — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Homepage Ticker</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Notices &amp; Announcements</h1>
+  </div>
+</div>
+
+<form action="{{ url_for('admin.new_notice') }}" method="POST" class="info-card" style="display:flex; gap:12px; margin-bottom:24px;">
+  <input type="text" name="text" placeholder="e.g. Museum closed on 26th January for national holiday" required style="flex:1;">
+  <button type="submit" class="btn btn-primary">+ Publish</button>
+</form>
+
+<div class="info-card">
+  <table class="admin-table">
+    <thead><tr><th>Notice</th><th>Status</th><th>Published</th><th></th></tr></thead>
+    <tbody>
+      {% for n in notices %}
+      <tr>
+        <td>{{ n.text }}</td>
+        <td><span class="pill {{ 'pill-open' if n.is_active else 'pill-full' }}">{{ 'Active' if n.is_active else 'Hidden' }}</span></td>
+        <td style="font-size:0.75rem; color:var(--ink-dim);">{{ n.created_at.strftime('%d %b %Y') }}</td>
+        <td style="display:flex; gap:8px;">
+          <form action="{{ url_for('admin.toggle_notice', notice_id=n.id) }}" method="POST">
+            <button class="btn btn-navy btn-sm">{{ 'Hide' if n.is_active else 'Show' }}</button>
+          </form>
+          <form action="{{ url_for('admin.delete_notice', notice_id=n.id) }}" method="POST" data-confirm="Delete this notice?">
+            <button class="btn-sm" style="background:#fbe3e3; color:var(--red-full); border:1px solid #f3c2c2; border-radius:4px; padding:7px 14px; cursor:pointer;">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="text-align:center; color:var(--ink-dim); padding:20px;">No notices published yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

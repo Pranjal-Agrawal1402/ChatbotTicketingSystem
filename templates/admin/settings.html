@@ -1,0 +1,59 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Site Settings — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Full Control</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Site Settings</h1>
+  </div>
+</div>
+<p style="color:var(--ink-dim); font-size:0.85rem; margin-bottom:24px; max-width:640px;">
+  Everything here controls live content across the entire public website — no code changes required.
+</p>
+
+<form method="POST" enctype="multipart/form-data" class="info-card" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:900px;">
+  <h3 style="grid-column:1/-1; font-size:0.95rem; color:var(--navy-deep); margin:0;">Branding</h3>
+  <div style="grid-column:1/-1; display:flex; align-items:center; gap:16px;">
+    {% if settings.logo_url %}
+    <img src="{{ url_for('static', filename=settings.logo_url) }}" alt="Current logo" style="width:60px; height:60px; object-fit:contain; border:1px solid var(--line); border-radius:8px; padding:4px; background:#fff;">
+    {% else %}
+    <div style="width:60px; height:60px; display:flex; align-items:center; justify-content:center; border:1px dashed var(--line); border-radius:8px; font-size:0.65rem; color:var(--ink-dim); text-align:center;">Default Emblem</div>
+    {% endif %}
+    <div style="flex:1;">
+      <label class="field-label">Upload New Logo (replaces the default emblem)</label>
+      <input type="file" name="logo" accept="image/*">
+      {% if settings.logo_url %}
+      <label style="display:flex; align-items:center; gap:6px; margin-top:8px; font-size:0.78rem;"><input type="checkbox" name="remove_logo" value="1"> Remove logo and use default emblem instead</label>
+      {% endif %}
+    </div>
+  </div>
+
+  <h3 style="grid-column:1/-1; font-size:0.95rem; color:var(--navy-deep); margin:10px 0 0;">General</h3>
+  <div><label class="field-label">Site Name</label><input type="text" name="site_name" value="{{ settings.site_name }}"></div>
+  <div><label class="field-label">Short Name</label><input type="text" name="site_short_name" value="{{ settings.site_short_name }}"></div>
+  <div style="grid-column:1/-1;"><label class="field-label">Tagline</label><input type="text" name="tagline" value="{{ settings.tagline }}"></div>
+  <div style="grid-column:1/-1;"><label class="field-label">About Text (homepage)</label><textarea name="about_text" rows="3">{{ settings.about_text }}</textarea></div>
+  <div><label class="field-label">Homepage Hero Photo — Wikipedia topic or media:filename.jpg</label><input type="text" name="hero_wiki_topic" value="{{ settings.hero_wiki_topic }}"></div>
+  <div><label class="field-label">Established Year</label><input type="text" name="established_year" value="{{ settings.established_year }}"></div>
+
+  <hr class="divider" style="grid-column:1/-1;">
+  <h3 style="grid-column:1/-1; font-size:0.95rem; color:var(--navy-deep); margin:0;">Contact &amp; Timings</h3>
+  <div style="grid-column:1/-1;"><label class="field-label">Address</label><input type="text" name="address" value="{{ settings.address }}"></div>
+  <div><label class="field-label">Phone</label><input type="text" name="phone" value="{{ settings.phone }}"></div>
+  <div><label class="field-label">Email</label><input type="email" name="email" value="{{ settings.email }}"></div>
+  <div style="grid-column:1/-1;"><label class="field-label">Visiting Timings</label><input type="text" name="timings" value="{{ settings.timings }}"></div>
+  <div><label class="field-label">Total Artefacts (display text)</label><input type="text" name="total_artifacts" value="{{ settings.total_artifacts }}"></div>
+
+  <hr class="divider" style="grid-column:1/-1;">
+  <h3 style="grid-column:1/-1; font-size:0.95rem; color:var(--navy-deep); margin:0;">Ticket Pricing (₹)</h3>
+  <div><label class="field-label">Indian Citizens</label><input type="number" name="price_indian" value="{{ settings.price_indian }}"></div>
+  <div><label class="field-label">Foreign Nationals</label><input type="number" name="price_foreign" value="{{ settings.price_foreign }}"></div>
+  <div><label class="field-label">Students</label><input type="number" name="price_student" value="{{ settings.price_student }}"></div>
+  <div><label class="field-label">Children</label><input type="number" name="price_child" value="{{ settings.price_child }}"></div>
+
+  <div style="grid-column:1/-1; padding-top:10px;">
+    <button type="submit" class="btn btn-primary">Save Settings →</button>
+  </div>
+</form>
+{% endblock %}

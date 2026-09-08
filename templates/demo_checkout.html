@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Secure Checkout — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+<section class="section" style="max-width:520px;">
+  <div class="reveal info-card">
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="font-size:2.4rem;">💳</div>
+      <h1 class="font-display" style="color:var(--navy-deep);">Secure Checkout</h1>
+      <span class="pill pill-busy" style="margin-top:8px;">🧪 DEMO PAYMENT MODE — no real money is charged</span>
+    </div>
+
+    <table class="price-table" style="margin-bottom:22px;">
+      <tr><th>Reference</th><td class="font-display">{{ booking.reference }}</td></tr>
+      <tr><th>Visitor</th><td>{{ booking.visitor_name }}</td></tr>
+      <tr><th>Tickets</th><td>{{ booking.total_tickets }}</td></tr>
+      <tr><th>Total</th><td style="font-weight:800; font-size:1.1rem;">₹{{ booking.amount }}</td></tr>
+    </table>
+
+    <form action="{{ url_for('public.demo_pay', reference=booking.reference) }}" method="POST">
+      <div style="margin-bottom:14px;"><label class="field-label">Card Number</label><input type="text" value="4242 4242 4242 4242" readonly></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;">
+        <div><label class="field-label">Expiry</label><input type="text" value="12/29" readonly></div>
+        <div><label class="field-label">CVC</label><input type="text" value="123" readonly></div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Pay ₹{{ booking.amount }} →</button>
+    </form>
+    <p style="font-size:0.7rem; text-align:center; color:var(--ink-dim); margin-top:16px;">
+      Add STRIPE_SECRET_KEY / STRIPE_PUBLIC_KEY to the environment to enable real payments.
+    </p>
+  </div>
+</section>
+{% endblock %}

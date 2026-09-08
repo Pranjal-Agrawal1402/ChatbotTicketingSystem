@@ -1,0 +1,28 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'Edit' if page else 'Add' }} Page — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">{{ 'Edit' if page else 'Add New' }}</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">{{ page.title if page else 'New Page' }}</h1>
+  </div>
+</div>
+
+<form method="POST" class="info-card" style="display:flex; flex-direction:column; gap:16px; max-width:800px;">
+  <div><label class="field-label">Page Title</label><input type="text" name="title" value="{{ page.title if page else '' }}" required></div>
+  <div>
+    <label class="field-label">Content (basic HTML allowed — e.g. &lt;p&gt;, &lt;a&gt;, &lt;strong&gt;)</label>
+    <textarea name="content" rows="12">{{ page.content if page else '' }}</textarea>
+  </div>
+  <div style="display:flex; align-items:center; gap:8px;">
+    <input type="checkbox" name="is_published" id="is_published" {{ 'checked' if (page is none) or page.is_published }} style="width:18px; height:18px;">
+    <label for="is_published" style="font-size:0.85rem;">Published (visible to the public)</label>
+  </div>
+  {% if page %}<p style="font-size:0.75rem; color:var(--ink-dim);">Live at: <code>/page/{{ page.slug }}</code></p>{% endif %}
+  <div style="display:flex; gap:12px;">
+    <button type="submit" class="btn btn-primary">{{ 'Save Changes' if page else 'Create Page' }} →</button>
+    <a href="{{ url_for('admin.pages_admin') }}" class="btn btn-navy">Cancel</a>
+  </div>
+</form>
+{% endblock %}

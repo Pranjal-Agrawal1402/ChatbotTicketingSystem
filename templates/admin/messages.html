@@ -1,0 +1,31 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Messages — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Inbox</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Contact Messages</h1>
+  </div>
+</div>
+
+{% if not messages %}
+<div class="info-card" style="text-align:center; color:var(--ink-dim);">No messages yet.</div>
+{% endif %}
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+  {% for msg in messages %}
+  <div class="info-card">
+    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+      <div>
+        <div style="font-weight:700; color:var(--navy-deep);">{{ msg.name }}</div>
+        <div style="font-size:0.75rem; color:var(--ink-dim);">{{ msg.email }}</div>
+      </div>
+      <span style="font-size:0.68rem; color:var(--ink-dim);">{{ msg.created_at.strftime('%d %b %Y, %H:%M') }}</span>
+    </div>
+    <span class="chip" style="margin-bottom:8px; display:inline-block;">📂 {{ msg.subject }}</span>
+    <p style="font-size:0.85rem; color:var(--ink-dim);">{{ msg.message }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

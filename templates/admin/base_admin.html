@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Admin — {{ site_settings.site_name }}{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  body { background: var(--cream-2); }
+  .admin-shell { display: flex; min-height: 100vh; }
+  .admin-sidebar { width: 250px; background: var(--navy-deep); color: #cbd6e8; flex-shrink: 0; padding: 22px 0; }
+  .admin-sidebar .brand { padding: 0 22px 22px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px; }
+  .admin-sidebar .brand-title { color: #fff; font-weight: 800; font-size: 1rem; }
+  .admin-sidebar a { display: block; padding: 11px 22px; color: #cbd6e8; text-decoration: none; font-size: 0.88rem; border-left: 3px solid transparent; }
+  .admin-sidebar a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .admin-sidebar a.active { background: rgba(255,255,255,0.08); border-left-color: var(--gold); color: #fff; font-weight: 700; }
+  .admin-main { flex: 1; padding: 30px 36px; max-width: 1200px; }
+  .admin-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
+</style>
+</head>
+<body>
+
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash-msg {{ 'error' if category=='error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <div class="brand-title">🛡️ Admin Portal</div>
+      <div style="font-size:0.68rem; opacity:0.65;">{{ site_settings.site_name }}</div>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint=='admin.dashboard' }}">📊 Dashboard</a>
+    <a href="{{ url_for('admin.galleries_admin') }}" class="{{ 'active' if 'gallery' in request.endpoint or 'galleries' in request.endpoint }}">🏺 Galleries</a>
+    <a href="{{ url_for('admin.employees_admin') }}" class="{{ 'active' if 'employee' in request.endpoint }}">🧑‍💼 Employees</a>
+    <a href="{{ url_for('admin.pages_admin') }}" class="{{ 'active' if request.endpoint and 'page' in request.endpoint and 'gallery' not in request.endpoint }}">📄 Pages</a>
+    <a href="{{ url_for('admin.links_admin') }}" class="{{ 'active' if 'link' in request.endpoint }}">🔗 Menus &amp; Links</a>
+    <a href="{{ url_for('admin.media_admin') }}" class="{{ 'active' if 'media' in request.endpoint }}">🖼️ Media Library</a>
+    <a href="{{ url_for('admin.bookings_admin') }}" class="{{ 'active' if request.endpoint=='admin.bookings_admin' }}">🎟️ Bookings</a>
+    <a href="{{ url_for('admin.notices_admin') }}" class="{{ 'active' if 'notice' in request.endpoint }}">📢 Notices</a>
+    <a href="{{ url_for('admin.settings_admin') }}" class="{{ 'active' if request.endpoint=='admin.settings_admin' }}">⚙️ Site Settings</a>
+    <a href="{{ url_for('admin.analytics_admin') }}" class="{{ 'active' if request.endpoint=='admin.analytics_admin' }}">📈 Visitor Analytics</a>
+    <a href="{{ url_for('admin.chats_admin') }}" class="{{ 'active' if request.endpoint=='admin.chats_admin' }}">💬 Chat Logs</a>
+    <a href="{{ url_for('admin.messages_admin') }}" class="{{ 'active' if request.endpoint=='admin.messages_admin' }}">📩 Messages</a>
+    <a href="{{ url_for('admin.account') }}" class="{{ 'active' if request.endpoint=='admin.account' }}">👤 Account</a>
+    <div style="margin-top:20px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.1);">
+      <a href="{{ url_for('public.home') }}">← Back to Website</a>
+      <a href="{{ url_for('admin.logout') }}" style="color:#f3a4a4;">🚪 Logout</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Ask Heritage AI — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+<section class="section" style="max-width:820px; text-align:center;">
+  <div class="reveal">
+    <div class="eyebrow">Your Virtual Guide</div>
+    <h1 class="section-title font-display">Chat with Heritage AI</h1>
+    <p class="section-desc" style="margin:0 auto 30px;">
+      Use the chat bubble in the bottom-right corner to ask anything — timings, prices, history, or
+      live visitor numbers for any gallery below.
+    </p>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:14px; margin-bottom:30px;">
+    {% for g in galleries %}
+    <div class="reveal info-card" style="text-align:center; padding:16px;">
+      <div style="font-size:1.6rem; margin-bottom:6px;">{{ g.icon }}</div>
+      <div style="font-size:0.82rem; font-weight:700; color:var(--navy-deep);">{{ g.name }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <button onclick="document.getElementById('chat-toggle').click();" class="btn btn-primary">Open Chat →</button>
+</section>
+{% endblock %}

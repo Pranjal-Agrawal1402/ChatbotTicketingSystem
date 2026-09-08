@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Booking Cancelled — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+<section class="section" style="max-width:520px; text-align:center;">
+  <div class="reveal info-card">
+    <div style="font-size:3rem; margin-bottom:10px;">😕</div>
+    <h1 class="font-display" style="color:var(--navy-deep);">Payment Cancelled</h1>
+    <p style="color:var(--ink-dim); margin-bottom:22px;">No amount was charged. You're welcome to try booking again anytime.</p>
+    <a href="{{ url_for('public.visit') }}" class="btn btn-primary">Book Again →</a>
+  </div>
+</section>
+{% endblock %}

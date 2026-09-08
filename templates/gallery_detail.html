@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ gallery.name }} — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+
+<section class="hero" style="min-height:320px;" data-wiki-topic="{{ gallery.wiki_topic }}" data-wiki-size="1600">
+  <div class="hero-content">
+    <span class="hero-eyebrow">{{ gallery.icon }} {{ gallery.period }}</span>
+    <h1 class="font-display" style="font-size:2.4rem;">{{ gallery.name }}</h1>
+    <p class="lead">{{ gallery.short_description }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="breadcrumb"><a href="{{ url_for('public.home') }}">Home</a> / <a href="{{ url_for('public.galleries_list') }}">Galleries</a> / {{ gallery.name }}</div>
+
+  <div style="display:grid; grid-template-columns: 2fr 1fr; gap:44px;">
+    <div>
+      <div class="reveal info-card" style="margin-bottom:26px;">
+        <div class="eyebrow">Overview</div>
+        <h2 class="font-display" style="margin:6px 0 14px; color:var(--navy-deep);">About This Gallery</h2>
+        <p style="color:var(--ink-dim); line-height:1.75;">{{ gallery.description }}</p>
+      </div>
+
+      <div class="reveal info-card" style="margin-bottom:26px;">
+        <div class="eyebrow">History</div>
+        <h2 class="font-display" style="margin:6px 0 14px; color:var(--navy-deep);">📜 Historical Background</h2>
+        <p style="color:var(--ink-dim); line-height:1.75;">{{ gallery.history }}</p>
+      </div>
+
+      {% if gallery.highlight_list %}
+      <div class="reveal" style="margin-bottom:26px;">
+        <div class="eyebrow">On Display</div>
+        <h2 class="font-display" style="margin:6px 0 14px; color:var(--navy-deep);">Gallery Features</h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          {% for h in gallery.highlight_list %}<span class="chip">✦ {{ h }}</span>{% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if gallery.monument_list %}
+      <div class="reveal">
+        <div class="eyebrow">Featured Exhibits</div>
+        <h2 class="font-display" style="margin:6px 0 18px; color:var(--navy-deep);">Key Monuments &amp; Artefacts</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:18px;">
+          {% for m in gallery.monument_list %}
+          <div class="monument-card">
+            <div class="monument-img" data-wiki-topic="{{ m.wiki_topic }}" data-wiki-size="400"></div>
+            <div style="padding:14px;">
+              <div style="font-weight:800; color:var(--navy-deep); font-size:0.92rem; margin-bottom:4px;">{{ m.name }}</div>
+              {% if m.blurb %}<div style="font-size:0.8rem; color:var(--ink-dim); line-height:1.5;">{{ m.blurb }}</div>{% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="reveal info-card" style="position:sticky; top:90px;">
+        <div class="eyebrow">Live Status</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
+          <span class="pill {{ 'pill-open' if gallery.status=='Open' else ('pill-busy' if gallery.status=='Busy' else 'pill-full') }}">● {{ gallery.status }}</span>
+          <span style="font-size:0.8rem; color:var(--ink-dim);">{{ gallery.available_slots }} slots free</span>
+        </div>
+        <div style="font-size:0.8rem; color:var(--ink-dim); margin-bottom:6px;">{{ gallery.current_occupancy }} of {{ gallery.max_occupancy }} capacity</div>
+        <div class="occ-track" style="margin-bottom:22px;"><div class="occ-fill {{ 'occ-open' if gallery.status=='Open' else ('occ-busy' if gallery.status=='Busy' else 'occ-full') }}" style="width:{{ gallery.occupancy_percent }}%"></div></div>
+
+        <table class="price-table" style="margin-bottom:20px;">
+          <tr><th>Timings</th><td>{{ site_settings.timings }}</td></tr>
+          <tr><th>Entry (Indian)</th><td>₹{{ site_settings.price_indian }}</td></tr>
+          <tr><th>Entry (Foreign)</th><td>₹{{ site_settings.price_foreign }}</td></tr>
+        </table>
+
+        <a href="{{ url_for('public.visit') }}" class="btn btn-primary btn-block">🎟️ Book Tickets →</a>
+        <button type="button" onclick="document.getElementById('chat-toggle').click(); document.getElementById('chat-input').value='Tell me more about the {{ gallery.name }}'; document.getElementById('chat-form').dispatchEvent(new Event('submit'));" class="btn btn-navy btn-block" style="margin-top:10px;">💬 Ask Heritage AI</button>
+      </div>
+    </div>
+  </div>
+
+  {% if related %}
+  <hr class="divider" style="margin:50px 0;">
+  <div class="reveal">
+    <div class="eyebrow">Continue Exploring</div>
+    <h2 class="section-title font-display">Related Galleries</h2>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:22px;">
+      {% for g in related %}
+      <a href="{{ url_for('public.gallery_detail', slug=g.slug) }}" class="card" style="text-decoration:none; color:inherit;">
+        <div class="card-img" data-wiki-topic="{{ g.wiki_topic }}" data-wiki-size="400"><span class="card-era-badge">{{ g.icon }} {{ g.period }}</span></div>
+        <div class="card-body"><div class="card-title">{{ g.name }}</div><div class="card-desc">{{ g.short_description }}</div></div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

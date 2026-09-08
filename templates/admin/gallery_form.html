@@ -1,0 +1,45 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'Edit' if gallery else 'Add' }} Gallery — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">{{ 'Edit' if gallery else 'Add New' }}</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">{{ gallery.name if gallery else 'New Gallery' }}</h1>
+  </div>
+</div>
+
+<form method="POST" class="info-card" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:900px;">
+  <div style="grid-column:1/-1;"><label class="field-label">Gallery Name</label><input type="text" name="name" value="{{ gallery.name if gallery else '' }}" required></div>
+  <div><label class="field-label">Period / Era Range</label><input type="text" name="period" value="{{ gallery.period if gallery else '' }}" placeholder="e.g. 1526 – 1857 CE"></div>
+  <div><label class="field-label">Display Order (chronological)</label><input type="number" name="era_order" value="{{ gallery.era_order if gallery else 1 }}"></div>
+  <div><label class="field-label">Icon (emoji)</label><input type="text" name="icon" value="{{ gallery.icon if gallery else '🏺' }}"></div>
+  <div>
+    <label class="field-label">Photo — Wikipedia Topic, or media:filename.jpg from Media Library</label>
+    <input type="text" name="wiki_topic" value="{{ gallery.wiki_topic if gallery else '' }}" placeholder="e.g. Taj_Mahal or media:my-photo-a1b2c3d4.jpg">
+  </div>
+  <div style="grid-column:1/-1;"><label class="field-label">Short Description (card summary)</label><input type="text" name="short_description" value="{{ gallery.short_description if gallery else '' }}"></div>
+  <div style="grid-column:1/-1;"><label class="field-label">Full Description</label><textarea name="description" rows="3">{{ gallery.description if gallery else '' }}</textarea></div>
+  <div style="grid-column:1/-1;"><label class="field-label">History</label><textarea name="history" rows="3">{{ gallery.history if gallery else '' }}</textarea></div>
+  <div style="grid-column:1/-1;">
+    <label class="field-label">Gallery Features / Highlights (separate with |)</label>
+    <input type="text" name="highlights" value="{{ gallery.highlights if gallery else '' }}">
+  </div>
+  <div style="grid-column:1/-1;">
+    <label class="field-label">Featured Monuments / Exhibits — one per line: Name :: Wikipedia_Topic (or media:filename.jpg) :: Short description</label>
+    <textarea name="monuments" rows="5" placeholder="Taj Mahal :: Taj_Mahal :: An ivory-white marble mausoleum.">{{ gallery.monuments_raw if gallery else '' }}</textarea>
+  </div>
+  <div><label class="field-label">Max Occupancy</label><input type="number" name="max_occupancy" value="{{ gallery.max_occupancy if gallery else 150 }}"></div>
+  <div><label class="field-label">Current Occupancy</label><input type="number" name="current_occupancy" value="{{ gallery.current_occupancy if gallery else 0 }}"></div>
+  {% if gallery %}
+  <div style="display:flex; align-items:center; gap:8px;">
+    <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if gallery.is_active }} style="width:18px; height:18px;">
+    <label for="is_active" style="font-size:0.85rem;">Active / visible on site</label>
+  </div>
+  {% endif %}
+  <div style="grid-column:1/-1; display:flex; gap:12px; padding-top:10px;">
+    <button type="submit" class="btn btn-primary">{{ 'Save Changes' if gallery else 'Create Gallery' }} →</button>
+    <a href="{{ url_for('admin.galleries_admin') }}" class="btn btn-navy">Cancel</a>
+  </div>
+</form>
+{% endblock %}

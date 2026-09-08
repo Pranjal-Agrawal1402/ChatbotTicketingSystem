@@ -1,0 +1,82 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Menus & Links — Admin{% endblock %}
+{% block admin_content %}
+
+<div class="admin-topbar">
+  <div>
+    <div class="eyebrow">Navigation</div>
+    <h1 class="font-display" style="color:var(--navy-deep); margin:4px 0 0;">Menus &amp; Links</h1>
+  </div>
+</div>
+<p style="color:var(--ink-dim); font-size:0.85rem; max-width:680px; margin-bottom:22px;">
+  Add any link to the top navigation menu or the footer — to a page you created, a gallery, or any
+  external URL.
+</p>
+
+<form action="{{ url_for('admin.new_link') }}" method="POST" class="info-card" style="display:grid; grid-template-columns:2fr 2fr 1fr 1fr auto; gap:12px; align-items:flex-end; margin-bottom:26px;">
+  <div><label class="field-label">Label</label><input type="text" name="label" placeholder="e.g. Careers" required></div>
+  <div><label class="field-label">URL</label><input type="text" name="url" placeholder="/page/careers or https://..." required></div>
+  <div>
+    <label class="field-label">Location</label>
+    <select name="location"><option value="nav">Top Menu</option><option value="footer" selected>Footer</option></select>
+  </div>
+  <div><label class="field-label">Order</label><input type="number" name="sort_order" value="0"></div>
+  <button type="submit" class="btn btn-primary">+ Add</button>
+</form>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+  <div class="info-card">
+    <h2 style="font-size:0.95rem; color:var(--navy-deep); margin-bottom:14px;">Top Navigation Menu</h2>
+    {% for link in nav_links %}
+    <form action="{{ url_for('admin.edit_link', link_id=link.id) }}" method="POST" style="display:grid; grid-template-columns:2fr 2fr 60px auto auto; gap:8px; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--line);">
+      <input type="text" name="label" value="{{ link.label }}" style="font-size:0.8rem; padding:6px 8px;">
+      <input type="text" name="url" value="{{ link.url }}" style="font-size:0.8rem; padding:6px 8px;">
+      <input type="hidden" name="location" value="nav">
+      <input type="number" name="sort_order" value="{{ link.sort_order }}" style="font-size:0.8rem; padding:6px 8px;">
+      <label style="display:flex; align-items:center; gap:4px; font-size:0.72rem;"><input type="checkbox" name="is_active" {{ 'checked' if link.is_active }}> On</label>
+      <button type="submit" class="btn btn-navy btn-sm">Save</button>
+    </form>
+    {% else %}
+    <p style="color:var(--ink-dim); font-size:0.82rem;">No custom menu items yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="info-card">
+    <h2 style="font-size:0.95rem; color:var(--navy-deep); margin-bottom:14px;">Footer Links</h2>
+    {% for link in footer_links %}
+    <form action="{{ url_for('admin.edit_link', link_id=link.id) }}" method="POST" style="display:grid; grid-template-columns:2fr 2fr 60px auto auto; gap:8px; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--line);">
+      <input type="text" name="label" value="{{ link.label }}" style="font-size:0.8rem; padding:6px 8px;">
+      <input type="text" name="url" value="{{ link.url }}" style="font-size:0.8rem; padding:6px 8px;">
+      <input type="hidden" name="location" value="footer">
+      <input type="number" name="sort_order" value="{{ link.sort_order }}" style="font-size:0.8rem; padding:6px 8px;">
+      <label style="display:flex; align-items:center; gap:4px; font-size:0.72rem;"><input type="checkbox" name="is_active" {{ 'checked' if link.is_active }}> On</label>
+      <button type="submit" class="btn btn-navy btn-sm">Save</button>
+    </form>
+    {% else %}
+    <p style="color:var(--ink-dim); font-size:0.82rem;">No custom footer links yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<h2 style="font-size:0.95rem; color:var(--navy-deep); margin:26px 0 14px;">Delete a Link</h2>
+<div class="info-card">
+  <table class="admin-table">
+    <thead><tr><th>Label</th><th>Location</th><th></th></tr></thead>
+    <tbody>
+      {% for link in nav_links + footer_links %}
+      <tr>
+        <td>{{ link.label }}</td>
+        <td style="text-transform:capitalize;">{{ link.location }}</td>
+        <td>
+          <form action="{{ url_for('admin.delete_link', link_id=link.id) }}" method="POST" data-confirm="Remove '{{ link.label }}'?">
+            <button class="btn-sm" style="background:#fbe3e3; color:var(--red-full); border:1px solid #f3c2c2; border-radius:4px; padding:6px 12px; cursor:pointer;">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" style="text-align:center; color:var(--ink-dim); padding:16px;">No links yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
