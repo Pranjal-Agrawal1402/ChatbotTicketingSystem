@@ -13,3 +13,6 @@ env/
 node_modules/
 static/uploads/*
 !static/uploads/.gitkeep
+
+.vercel
+.env*
