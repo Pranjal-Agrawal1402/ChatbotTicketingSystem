@@ -88,8 +88,15 @@ source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env            # optional — everything works with zero keys
 python wsgi.py
+``` 
+## Run it on server
+```bash
+py -m venv venv
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+venv\Scripts\activate
+pip install -r requirements.txt
+python wsgi.py
 ```
-
 Visit **http://127.0.0.1:5000**. The database is created and seeded automatically on first run —
 12 galleries, default settings and sample notices, no setup needed.
 
